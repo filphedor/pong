@@ -5,7 +5,7 @@ const Score = require("./score.js");
 function Game(r) {
   const UNIT = r/50;
   const PADDLE_WIDTH = 2*UNIT;
-  const PADDLE_HEIGHT = 5*UNIT;
+  const PADDLE_HEIGHT = 10*UNIT;
 
   this.r = r;
   this.ball = new Ball(UNIT, r, r, 2, 2);
@@ -17,27 +17,39 @@ function Game(r) {
 }
 
 Game.prototype.update = function(ctx) {
-  ctx.fillStyle = "#000000";
-  ctx.fillRect(0, 0, 1000, 1000);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, 1000, 1000);
 
-  this.ball.update(ctx);
-  this.leftPaddle.update(ctx);
-  this.rightPaddle.update(ctx);
-  
-  if((this.ball.y - this.ball.r) <= 0 || (this.ball.y + this.ball.r) >= 2*this.r) {
-    this.ball.vy *= -1;
-  }
+      this.ball.update(ctx);
+      this.leftPaddle.update(ctx);
+      this.rightPaddle.update(ctx);
 
-  if(isBallInPaddle(this.ball, this.leftPaddle) || isBallInPaddle(this.ball, this.rightPaddle)) {
-    this.ball.vx *= -1;
-  }
+      if((this.ball.y - this.ball.r) <= 0 || (this.ball.y + this.ball.r) >= 2*this.r) {
+        this.ball.vy *= -1;
+      }
+
+      if (isBallInPaddle(this.ball, this.leftPaddle)) {
+            if (this.ball.x - this.ball.vx - this.ball.r > this.leftPaddle.x + Math.floor(this.leftPaddle.w/2)) {
+                this.ball.vx *= -1;
+            } else {
+                this.ball.vy *= -1;
+            }
+      }
+
+      if (isBallInPaddle(this.ball, this.rightPaddle)) {
+        if (this.ball.x - this.ball.vx + this.ball.r < this.rightPaddle.x - Math.floor(this.rightPaddle.w/2)) {
+                this.ball.vx *= -1;
+        } else {
+            this.ball.vy *= -1;
+        }
+    }
 }
 
 function isPointInPaddle(x, y, paddle) {
-  let xmin = paddle.x - paddle.w/2;
-  let xmax = paddle.x + paddle.w/2;
-  let ymin = paddle.y - paddle.h/2;
-  let ymax = paddle.y + paddle.h/2;
+  let xmin = paddle.x - Math.floor(paddle.w/2);
+  let xmax = paddle.x + Math.floor(paddle.w/2);
+  let ymin = paddle.y - Math.floor(paddle.h/2);
+  let ymax = paddle.y + Math.floor(paddle.h/2);
 
   return x >= xmin && x <= xmax && y >= ymin && y <= ymax;
 }
@@ -50,5 +62,3 @@ function isBallInPaddle(ball, paddle) {
 }
 
 module.exports = Game;
-
-
