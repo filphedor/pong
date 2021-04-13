@@ -8,12 +8,17 @@ function Game(r) {
   const PADDLE_HEIGHT = 5*UNIT;
   const PADDLE_GAP = 5*UNIT;
 
+  const SCORE_Y = 5*UNIT;
+  const SCORE_GAP = 10 * UNIT;
+
   this.r = r;
   this.ball = new Ball(UNIT / 2, r, r, 2, 2);
+
   this.leftPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_GAP, r, 4, 87, 83);
   this.rightPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, 2*r - PADDLE_GAP, r, 4, 73, 75);
-  this.leftScore = new Score();
-  this.rightScore = new Score();
+
+  this.leftScore = new Score(SCORE_GAP, SCORE_Y);
+  this.rightScore = new Score(2 * r - SCORE_GAP, SCORE_Y);
 }
 
 Game.prototype.update = function(ctx) {
@@ -23,6 +28,7 @@ Game.prototype.update = function(ctx) {
       this.ball.update(ctx);
       this.leftPaddle.update(ctx);
       this.rightPaddle.update(ctx);
+
 
       if((this.ball.y - this.ball.r) <= 0 || (this.ball.y + this.ball.r) >= 2*this.r) {
         this.ball.vy *= -1;
@@ -43,6 +49,25 @@ Game.prototype.update = function(ctx) {
             this.ball.vy *= -1;
         }
     }
+
+    if((this.ball.x - this.ball.r) <= 0) {
+        this.rightScore.increment();
+        this.resetBall();
+    }
+
+    if((this.ball.x + this.ball.r) >= 2*this.r) {
+        this.leftScore.increment();
+        this.resetBall();
+    }
+
+
+    this.leftScore.update(ctx);
+    this.rightScore.update(ctx);
+}
+
+Game.prototype.resetBall = function(ctx) {
+    this.ball.x = this.r;
+    this.ball.y = this.r;
 }
 
 function isPointInPaddle(x, y, paddle) {
