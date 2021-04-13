@@ -4,16 +4,16 @@ const Score = require("./score.js");
 
 function Game(r) {
   const UNIT = r/50;
-  const PADDLE_WIDTH = 2*UNIT;
-  const PADDLE_HEIGHT = 10*UNIT;
+  const PADDLE_WIDTH = UNIT;
+  const PADDLE_HEIGHT = 5*UNIT;
+  const PADDLE_GAP = 5*UNIT;
 
   this.r = r;
-  this.ball = new Ball(UNIT, r, r, 2, 2);
-  this.leftPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_WIDTH, r, 87, 83);
-  this.rightPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, 2*r - PADDLE_WIDTH, r, 73, 75);
+  this.ball = new Ball(UNIT / 2, r, r, 2, 2);
+  this.leftPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_GAP, r, 4, 87, 83);
+  this.rightPaddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, 2*r - PADDLE_GAP, r, 4, 73, 75);
   this.leftScore = new Score();
   this.rightScore = new Score();
-
 }
 
 Game.prototype.update = function(ctx) {
@@ -38,7 +38,7 @@ Game.prototype.update = function(ctx) {
 
       if (isBallInPaddle(this.ball, this.rightPaddle)) {
         if (this.ball.x - this.ball.vx + this.ball.r < this.rightPaddle.x - Math.floor(this.rightPaddle.w/2)) {
-                this.ball.vx *= -1;
+            this.ball.vx *= -1;
         } else {
             this.ball.vy *= -1;
         }

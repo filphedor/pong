@@ -1,8 +1,9 @@
-function Paddle(w, h, x, y, upKeyCode, downKeyCode) {
+function Paddle(w, h, x, y, vy, upKeyCode, downKeyCode) {
   this.w = w;
   this.h = h;
   this.x = x;
   this.y = y;
+  this.vy = vy;
   this.upKeyCode = upKeyCode;
   this.downKeyCode = downKeyCode;
 
@@ -39,8 +40,9 @@ Paddle.prototype.update = function(ctx) {
     dir = 1;
   }
 
-  let vy = this.w;
-  this.y += dir*vy;
+  this.y += dir*this.vy;
+
+  this.y = Math.min(Math.max(0 + this.h/2, this.y), 1000 - this.h/2);
 
   ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(this.x - this.w/2, this.y - this.h/2, this.w, this.h);
